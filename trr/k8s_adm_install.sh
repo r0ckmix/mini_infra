@@ -16,7 +16,7 @@ net.bridge.bridge-nf-call-iptables = 1
 net.ipv4.ip_forward = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 EOF
-sudo sysctl –system
+sudo sysctl --system
 
 # configure firewall
 firewall-cmd --add-port=6443-10250/tcp --permanent
@@ -52,3 +52,7 @@ EOF
 
 sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
 sudo systemctl enable --now kubelet
+
+sudo echo 'KUBECONFIG=/etc/kubernetes/admin.conf' >> /root/.bash_profile
+sudo firewall-cmd --permanent --zone=public --set-target=ACCEPT
+      "firewall-cmd --reload"
