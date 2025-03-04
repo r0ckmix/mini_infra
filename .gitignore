@@ -1,3 +1,7 @@
 /trr/create_wrk/secret.auto.tfvars
 /.idea/
 /trr/.terraform/
+/trr/.terraform.lock.hcl
+/trr/secret.tfvars
+/trr/terraform.tfstate
+/trr/terraform.tfstate.backup

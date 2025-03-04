@@ -12,8 +12,7 @@ resource "null_resource" "vm_configuration_linux" {
 
   provisioner "remote-exec" {
     inline = [
-      "python /tmp/addhost.py ${var.cp_ip} ${var.cp_name} ${var.cp_domain} ${var.wrk_ip} ${var.wrk_name} ${var.wrk_domain}",
-
+      "python /tmp/addhost.py ${var.cp_ip} ${var.cp_name} ${var.cp_domain} ${var.wrk_ip} ${var.wrk_name} ${var.wrk_domain}"
     ]
   }
 }

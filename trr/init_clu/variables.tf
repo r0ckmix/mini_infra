@@ -15,23 +15,18 @@ variable "vm_ip" {
   type        = string
 }
 
+variable "pod_network" {
+  description = "Pod network IP range"
+  type        = string
+}
+
+variable "calico_url" {
+  description = "Calico project source url"
+  type        = string
+}
+
 #=========================================================
 
-variable "cp_ip" {
-  type        = string
-}
-variable "cp_name" {
-  type        = string
-}
 variable "wrk_ip" {
-  type        = string
-}
-variable "wrk_name" {
-  type        = string
-}
-variable "cp_domain" {
-  type        = string
-}
-variable "wrk_domain" {
   type        = string
 }

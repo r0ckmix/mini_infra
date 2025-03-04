@@ -1,33 +1,12 @@
-provider "vsphere" {
-  user     = var.vc_username
-  password = var.vc_password
-  vsphere_server = var.vcs_ip
-  allow_unverified_ssl = true
-}
-
-data "vsphere_datacenter" "datacenter" {
-  name = "Datacenter"
-}
-
-data "vsphere_datastore" "datastore" {
-  name          = var.datastore_name
-  datacenter_id = data.vsphere_datacenter.datacenter.id
-}
-
-data "vsphere_network" "network" {
-  name          = var.network_name
-  datacenter_id = data.vsphere_datacenter.datacenter.id
-}
-
 data "vsphere_virtual_machine" "source_template" {
   name          = var.image_name
-  datacenter_id = data.vsphere_datacenter.datacenter.id
+  datacenter_id = var.datacenter_id
 }
 
-resource "vsphere_virtual_machine" k8s_wrk {
+resource "vsphere_virtual_machine" "k8s_wrk" {
   name             = var.vm_name
-  resource_pool_id = var.group_name
-  datastore_id     = data.vsphere_datastore.datastore.id
+  resource_pool_id = var.pool_id
+  datastore_id     = var.datastore_id
   guest_id = data.vsphere_virtual_machine.source_template.guest_id
 
   num_cpus = var.vm_cpu
@@ -38,7 +17,7 @@ resource "vsphere_virtual_machine" k8s_wrk {
   }
 
   network_interface {
-    network_id = data.vsphere_network.network.id
+    network_id = var.network_id
   }
 
   clone {
