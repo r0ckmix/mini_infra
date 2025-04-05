@@ -8,6 +8,8 @@ resource "vsphere_virtual_machine" "k8s_wrk" {
   resource_pool_id = var.pool_id
   datastore_id     = var.datastore_id
   guest_id = data.vsphere_virtual_machine.source_template.guest_id
+  wait_for_guest_net_timeout = 10
+  wait_for_guest_ip_timeout = 10
 
   num_cpus = var.vm_cpu
   memory   = var.vm_mem
@@ -35,7 +37,7 @@ resource "vsphere_virtual_machine" "k8s_wrk" {
     type     = "ssh"
     user     = var.vm_user
     password = var.vm_password
-    host     = self.guest_ip_addresses[0]
+    host     = vsphere_virtual_machine.k8s_wrk.guest_ip_addresses[0]
   }
   provisioner "file" {
     source      = "k8s_adm_install.sh"
