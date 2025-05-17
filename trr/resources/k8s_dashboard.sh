@@ -10,7 +10,7 @@ cd ~
 helm repo add metallb https://metallb.github.io/metallb
 helm install metallb metallb/metallb
 
-cat >/tmp/resources/metallb-ipaddresspool.yml <<EOF
+cat >/tmp/resources/metallb-ipaddresspool.yaml <<EOF
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
@@ -42,7 +42,7 @@ data:
     server {
       listen 80;
       location / {
-        proxy_pass https://dashboard-proxy.kubernetes-dashboard.svc.cluster.local:443;
+        proxy_pass https://kubernetes-dashboard-kong-proxy.kubernetes-dashboard.svc.cluster.local:443;
         proxy_ssl_server_name on;
         proxy_set_header Authorization "Bearer ${TOKEN}";
       }

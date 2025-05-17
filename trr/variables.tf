@@ -57,6 +57,12 @@ variable "vm_user" {
   type        = string
 }
 
+variable "vm_password" {
+  description = "VM password"
+  type        = string
+  sensitive   = true
+}
+
 variable "calico_url" {
   type        = string
   default     = "https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests"
