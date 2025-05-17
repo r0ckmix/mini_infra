@@ -1,0 +1,15 @@
+apiVersion: v1
+data:
+  proxy.conf: |
+    server {
+      listen 80;
+      location / {
+        proxy_pass https://dashboard-proxy.kubernetes-dashboard.svc.cluster.local:443;
+        proxy_ssl_server_name on;
+        proxy_set_header Authorization "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6InQ3VVRDaWhveldMUTl3YVlXRVdRcnpKMmJJZ2FpS3dQOW45enhlWDJocEkifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJkYXNoYm9hcmQtc2VjcmV0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImRhc2hib2FyZC11c2VyIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiNDE1NjQwNmYtYmZmNS00MDE0LWI0ZjMtNTdlN2ZjYzY0YzA4Iiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmVybmV0ZXMtZGFzaGJvYXJkOmRhc2hib2FyZC11c2VyIn0.Iaxs8aq4Oib6SPJQfG0kmJq63tfI1FqM7Pr_qHS7JpLqHBx4ASC2Rj6_Pa6bHeTdJgye42kiiDnFdxcuH-sfW-O1jPxIbBDVvc0rdxbekjnoKZ5TIBclPShFy1drJtxrd6c8V1-DPK7LvlIAGZdXN1rV7uLc3OFRi_9Iu3t1dornEELk-cEbdJ_CIq9tbLMYS0AdNI7NJIQ9dTOCgOF7tkIRRZLvYVG0kTZ7wXbWcbmie6nUAZlr9zne4E8Buh3Z7GVCmt7M4fy2ftLmg74B2SdARjWoUPlYtNudPIL-p9fod3CLSabY_4Vl1VoNgNg3mAndQXNhLNTE3zGtKPHDHQ";
+      }
+    }
+kind: ConfigMap
+metadata:
+  name: dashboard-proxy-config
+  namespace: kubernetes-dashboard

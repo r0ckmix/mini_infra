@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashboard-proxy-deployment
+  namespace: kubernetes-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dashboard-proxy-deployment
+  template:
+    metadata:
+      labels:
+        app: dashboard-proxy-deployment
+    spec:
+      containers:
+        - image: nginx:1.28.0
+          name: nginx
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d
+              name: nginx-config-volume
+      volumes:
+        - configMap:
+            defaultMode: 448
+            name: dashboard-proxy-config
+          name: nginx-config-volume

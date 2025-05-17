@@ -1,5 +1,12 @@
 #!/bin/bash
+source ./clu_env.txt
+
 cd ~
+
+curl -fsSL -o get_helm.sh $HELM_URL
+chmod 700 get_helm.sh
+./get_helm.sh
+
 kubeadm init --pod-network-cidr $POD_NETWORK
 export KUBECONFIG=/etc/kubernetes/admin.conf
 kubectl create -f $CALICO_URL/tigera-operator.yaml

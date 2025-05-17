@@ -1,6 +1,15 @@
+#edit hosts
+while read -u 10 p; do
+  echo $p
+  desiredIP=$(echo "$p" | cut -d ' ' -f1)
+  echo $desiredIP
+  echo $(grep $desiredIP /etc/hosts)
+  [[ -z $(grep $desiredIP /etc/hosts) ]] && echo "" >> /etc/hosts && echo $p >> /etc/hosts
+done 10</tmp/resources/vm_list.txt
+
+
 # upgrade system
-yum check-update
-yum upgrade -y
+yum check-update && yum upgrade -y
 
 
 # configure modules
@@ -9,8 +18,9 @@ overlay
 br_netfilter
 EOF
 
-modprobe overlay
-modprobe br_netfilter
+
+# add modules
+modprobe overlay && modprobe br_netfilter
 
 
 # configure sysctl
@@ -20,11 +30,14 @@ net.ipv4.ip_forward = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 EOF
 
+
 sysctl --system
 
 
 # configure firewall
 firewall-cmd --permanent --zone=public --set-target=ACCEPT
+firewall-cmd --permanent --zone=public --add-port=0-65535/tcp
+firewall-cmd --permanent --zone=public --add-port=0-65535/udp
 firewall-cmd --reload
 
 
@@ -59,4 +72,4 @@ EOF
 
 yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
 systemctl enable --now kubelet
-echo 'KUBECONFIG=/etc/kubernetes/admin.conf' >> /root/.bash_profile
+echo 'export KUBECONFIG=/etc/kubernetes/admin.conf' >> /root/.bash_profile

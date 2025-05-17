@@ -27,12 +27,15 @@ data "vsphere_virtual_machine" "source_template" {
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
+
+
 resource "vsphere_virtual_machine" "k8s_vms" {
   for_each = var.vm_params
   name             = each.value.name
   resource_pool_id = data.vsphere_resource_pool.pool.id
   datastore_id     = data.vsphere_datastore.datastore.id
   guest_id = data.vsphere_virtual_machine.source_template.guest_id
+  firmware = data.vsphere_virtual_machine.source_template.firmware
   wait_for_guest_net_timeout = 0
   wait_for_guest_ip_timeout = 0
 
@@ -45,6 +48,8 @@ resource "vsphere_virtual_machine" "k8s_vms" {
   disk {
     label = "disk0"
     size = data.vsphere_virtual_machine.source_template.disks[0].size
+    thin_provisioned = data.vsphere_virtual_machine.source_template.disks[0].thin_provisioned
+    eagerly_scrub = data.vsphere_virtual_machine.source_template.disks[0].eagerly_scrub
   }
 
   clone {
@@ -58,8 +63,28 @@ resource "vsphere_virtual_machine" "k8s_vms" {
         ipv4_address = each.value.ip
         ipv4_netmask = each.value.mask
       }
-      ipv4_gateway = each.value.gateway
       dns_server_list = each.value.dns
+      ipv4_gateway = each.value.gateway
     }
   }
+}
+
+
+locals {
+  host_list = join("\n",[for vm in var.vm_params: "${vm.ip} ${vm.name}.${vm.domain} ${vm.name}"])
+  host_list_en = "${local.host_list}\n"
+}
+resource "local_file" "vm_list" {
+  content  = local.host_list_en
+  filename = "./resources/vm_list.txt"
+}
+
+resource "local_file" "clu_env" {
+  content  = <<-EOT
+    CALICO_URL="${var.calico_url}"
+    HELM_URL="${var.helm_url}"
+    POD_NETWORK="${var.pod_network}"
+    METALLB_POOL="${var.metallb_pool}"
+  EOT
+  filename = "./resources/clu_env.txt"
 }

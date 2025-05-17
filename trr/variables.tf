@@ -35,7 +35,7 @@ variable "vc_params" {
   default = {
     datastore = "bddt1"
     network = "VM Network"
-    image = "k8s_img"
+    image = "gimage"
     server = "192.168.0.2"
     res_pool = "192.168.0.5/Resources"
   }
@@ -57,8 +57,22 @@ variable "vm_user" {
   type        = string
 }
 
-variable "vm_password" {
-  description = "VM user password"
+variable "calico_url" {
   type        = string
-  sensitive   = true
+  default     = "https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests"
+}
+
+variable "helm_url" {
+  type        = string
+  default     = "https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3"
+}
+
+variable "pod_network" {
+  type        = string
+  default     = "172.16.0.0/16"
+}
+
+variable "metallb_pool" {
+  type        = string
+  default     = "192.168.0.210-192.168.0.220"
 }
