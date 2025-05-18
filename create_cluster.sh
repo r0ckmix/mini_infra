@@ -4,11 +4,12 @@ terraform -chdir=./trr apply -var-file=secret.tfvars -auto-approve
 # get VM credentials
 K8S_USER=$(grep 'vm_user = ' ./trr/secret.tfvars | cut -f2 -d'=' | tr -d '"')
 K8S_PASS=$(grep 'vm_password = ' ./trr/secret.tfvars | cut -f2 -d'=' | tr -d '"')
-sleep 30
+sleep 40
 
 # install kubeadm
 for server in $(grep 'ip = ' ./trr/variables.tf | cut -f2 -d'=' | tr -d '"' | tr -d '\n'); do
   sshpass -p $K8S_PASS scp -r -o StrictHostKeyChecking=no ./trr/resources $K8S_USER@$server:/tmp
+  sleep 2
   sshpass -p $K8S_PASS ssh -o StrictHostKeyChecking=no $K8S_USER@$server 'chmod -R 777 /tmp/resources'
   sshpass -p $K8S_PASS ssh -o StrictHostKeyChecking=no $K8S_USER@$server 'bash -s < /tmp/resources/k8s_adm_install.sh'
 done

@@ -9,18 +9,17 @@ chmod 700 get_helm.sh
 
 kubeadm init --pod-network-cidr $POD_NETWORK
 export KUBECONFIG=/etc/kubernetes/admin.conf
+
+kubectl create -f $CALICO_URL/operator-crds.yaml
 kubectl create -f $CALICO_URL/tigera-operator.yaml
 curl $CALICO_URL/custom-resources.yaml -O
 sed -i "s|cidr: 192.168.0.0/16|cidr: $POD_NETWORK|g" ./custom-resources.yaml
 kubectl create -f ./custom-resources.yaml
 
 sleep 2
-
-until [ $(kubectl get pods -n calico-system --no-headers | grep Running -v | wc -l) -ne 0 ]
-do
-    kubectl get pods -n calico-system
-
-    ((c++))
-    (( c > 150 )) && exit 1
-    sleep 2
-done
+kubectl wait pod --all --for=condition=Ready --timeout=300s -n calico-system
+sleep 2
+kubectl wait pod --all --for=condition=Ready --timeout=300s -n calico-apiserver
+sleep 2
+kubectl wait pod --all --for=condition=Ready --timeout=300s -n tigera-operator
+sleep 2

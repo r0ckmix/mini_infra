@@ -65,7 +65,7 @@ variable "vm_password" {
 
 variable "calico_url" {
   type        = string
-  default     = "https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests"
+  default     = "https://raw.githubusercontent.com/projectcalico/calico/v3.30.0/manifests"
 }
 
 variable "helm_url" {
